@@ -42,6 +42,12 @@ not be processed.
 Application information.
 
 
+## Customising whitelist
+There is a special file in the application directory named "whitelist.csv". This
+file contains the allowed file types for the application. You may add or remove
+these but keep in mind that not all files are supposed to be converted.
+
+
 ## Running on Linux
 
 ### Installing dependencies (Debian-based systems)
