@@ -1,0 +1,22 @@
+bwEnc - What's New?
+-------------------
+
+Version 1.03
+- Action icons
+- Add directory is now add folder
+- Drag-and-drop
+- Dummy column for easier table selections
+- Enable/disable widgets based on user actions
+- More detailed info on file add (duplicates, folders, unallowed extensions)
+- New style PyQt signals
+- Row numbers in table for counting
+- Window geometry is now saved
+
+Version 1.02
+- Settings are now handled using Qt's QSettings.
+
+Version 1.01
+- Added more supported file types.
+
+Version 1.00
+- Initial version.
