@@ -4,7 +4,6 @@
 """ An application to convert file encodings. """
 
 # Python imports
-import configparser # Configuration file parser
 import csv # CSV File Reading and Writing
 import os # Miscellaneous operating system interfaces
 import sys # System-specific parameters and functions
@@ -28,7 +27,7 @@ class Main(QtGui.QMainWindow):
     def __init__(self):
 
         # Declare class variables
-        self.filelist = [] # Filelist for files to process
+        self.filelist = [] # File list for files to process
         self.maxsize = 524288 # Maximum file size
         self.path = "" # String for path
         self.encodings = [
@@ -48,7 +47,7 @@ class Main(QtGui.QMainWindow):
             ["ISO-8859-15", "iso8859_15"],
             ["KOI8-R", "koi8_r"],
             ["KOI8-U", "koi8_u"],
-            ["UTF-8", "utf_8_sig"],
+            ["UTF-8 with BOM", "utf_8_sig"],
             ["UTF-8 without BOM", "utf_8"],
             ["UTF-16BE", "utf_16_be"],
             ["UTF-16LE", "utf_16_le"],
@@ -78,10 +77,11 @@ class Main(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        # Connect signals, menu
+        # Connect signals, menu and toolbar
         self.ui.actionAddFiles.triggered.connect(self.addFiles)
         self.ui.actionAddFolder.triggered.connect(self.addFolder)
-        self.ui.actionClearFileList.triggered.connect(self.clearFileList)
+        self.ui.actionRemoveFiles.triggered.connect(self.removeFiles)
+        self.ui.actionClearList.triggered.connect(self.clearList)
         self.ui.actionMaximumFileSize.triggered.connect(self.maximumFileSize)
         self.ui.actionQuit.triggered.connect(self.quitApplication)
         self.ui.actionAbout.triggered.connect(self.aboutMessage)
@@ -89,7 +89,7 @@ class Main(QtGui.QMainWindow):
         # Connect signals, buttons
         self.ui.btnConvert.clicked.connect(self.convertFiles)
 
-        # Drag-and-drop events for filelist
+        # Drag-and-drop events for file list
         self.ui.tblFileList.dragEnterEvent = self.dragEnterEvent
         self.ui.tblFileList.dragMoveEvent = self.dragEnterEvent
         self.ui.tblFileList.dropEvent = self.dropEvent
@@ -98,7 +98,8 @@ class Main(QtGui.QMainWindow):
         self.setWindowIcon(QtGui.QIcon("icon.png"))
         self.ui.actionAddFiles.setIcon(QtGui.QIcon("add_files.png"))
         self.ui.actionAddFolder.setIcon(QtGui.QIcon("add_folder.png"))
-        self.ui.actionClearFileList.setIcon(QtGui.QIcon("clear_file_list.png"))
+        self.ui.actionRemoveFiles.setIcon(QtGui.QIcon("remove.png"))
+        self.ui.actionClearList.setIcon(QtGui.QIcon("clear.png"))
         self.ui.actionMaximumFileSize.setIcon(QtGui.QIcon("max_file_size.png"))
         self.ui.actionQuit.setIcon(QtGui.QIcon("quit.png"))
         self.ui.actionAbout.setIcon(QtGui.QIcon("about.png"))
@@ -111,7 +112,7 @@ class Main(QtGui.QMainWindow):
 
         # Set default encodings
         self.ui.cboInputEnc.setCurrentIndex(24)
-        self.ui.cboOutputEnc.setCurrentIndex(16)
+        self.ui.cboOutputEnc.setCurrentIndex(17)
 
         # Load settings
         self.loadSettings()
@@ -132,11 +133,9 @@ class Main(QtGui.QMainWindow):
 
         self.typefilter = alltypes + ");;" + self.typefilter
 
-        # Make a filelist from command-line arguments
-        for arg in sys.argv[1:]:
-            ext = os.path.splitext(arg)[1][1:].lower()
-            if os.path.isfile(arg) and ext in self.whitelist:
-                self.filelist.append(arg)
+        # Check if command line arguments has files in it
+        if sys.argv[1:]:
+            self.loopItems(sys.argv[1:])
 
         # Refresh table
         self.refreshTable()
@@ -149,7 +148,7 @@ class Main(QtGui.QMainWindow):
     # Add files
     def addFiles(self):
 
-        # Get filelist using a dialog
+        # Get file list using a dialog
         items = QtGui.QFileDialog.getOpenFileNames(self, "Add files",
             self.path, self.typefilter)
 
@@ -210,15 +209,16 @@ class Main(QtGui.QMainWindow):
                 folders += 1
                 continue
 
+            # Check file size
+            if os.path.getsize(item) > self.maxsize:
+                oversized += 1
+                continue
+
             # Check for extension
             ext = os.path.splitext(item)[1][1:].lower()
             if ext not in self.whitelist:
                 unallowed += 1
                 continue
-
-            # Check file size
-            if os.path.getsize(item) > self.maxsize:
-                oversized += 1
 
             # Check if file path is an existing regular file
             if not os.path.isfile(item):
@@ -231,7 +231,13 @@ class Main(QtGui.QMainWindow):
             # Add file
             self.filelist.append(item)
 
-        # Message about addding, if necessary
+        # Check for files, sort them, enable widgets and refresh table
+        if len(self.filelist) > 0:
+            self.filelist.sort()
+            self.enableWidgets()
+            self.refreshTable()
+
+        # Count total adds and message user, if necessary
         total = nonexist
         total += duplicates
         total += folders
@@ -240,29 +246,52 @@ class Main(QtGui.QMainWindow):
         if total > 0:
             msg = "%s items were skipped:\n" % (total)
             msg += "\n"
-            msg += "%s does not exist\n" % (nonexist)
+            msg += "%s doesn't exist\n" % (nonexist)
             msg += "%s duplicates\n" % (duplicates)
             msg += "%s folders\n" % (folders)
             msg += "%s over maximum size\n" % (oversized)
             msg += "%s unallowed extensions\n" % (unallowed)
             QtGui.QMessageBox.information(self, "Info", msg)
 
-        # Check file list for files
-        if len(self.filelist) < 1:
-            return
 
-        # Sort filelist
-        self.filelist.sort()
-
-        # Enable widgets and refresh table
-        self.enableWidgets()
+    # Clear list
+    def clearList(self):
+        self.filelist[:] = []
+        self.disableWidgets()
         self.refreshTable()
 
 
-    # Clear file list
-    def clearFileList(self):
-        self.filelist[:] = []
-        self.disableWidgets()
+    # Remove files
+    def removeFiles(self):
+
+        # Check if file list is empty
+        if len(self.filelist) < 1:
+            msg = "No files in list."
+            QtGui.QMessageBox.critical(self, "Error", msg)
+            return
+
+        # Check table's selected items
+        if not self.ui.tblFileList.selectedIndexes():
+            msg = "Please select file."
+            QtGui.QMessageBox.critical(self, "Error", msg)
+            return
+
+        # Get indexes from table
+        rows = []
+        for item in self.ui.tblFileList.selectedIndexes():
+            index = int(item.row())
+            if index not in rows:
+                rows.append(index)
+
+        # Remove items in reverse order (so the indexes won't change)
+        for index in sorted(rows, reverse=True):
+            del self.filelist[index]
+
+        # Check file list for files
+        if len(self.filelist) < 1:
+            self.disableWidgets()
+
+        # Refresh table
         self.refreshTable()
 
 
@@ -295,7 +324,7 @@ class Main(QtGui.QMainWindow):
     # Help > About...
     def aboutMessage(self):
         message = """<strong>bwEnc</strong><br />
-        Version 1.03<br />
+        Version 1.1.0<br />
         <br />
         This is free software.<br />
         Released under the General Public License.<br />
@@ -400,7 +429,7 @@ class Main(QtGui.QMainWindow):
         self.ui.tblFileList.setRowCount(0)
         self.ui.tblFileList.clear()
 
-        # Check if filelist is empty
+        # Check if file list is empty
         if len(self.filelist) == 0:
             return False
 
@@ -439,7 +468,7 @@ class Main(QtGui.QMainWindow):
     # Convert file encodings
     def convertFiles(self):
 
-        # Check if filelist is empty
+        # Check if file list is empty
         if len(self.filelist) == 0:
             message = "No files to process."
             QtGui.QMessageBox.critical(self, "Error", message)
@@ -472,11 +501,15 @@ class Main(QtGui.QMainWindow):
 
     # Disable widgets
     def disableWidgets(self):
+        self.ui.actionRemoveFiles.setEnabled(False)
+        self.ui.actionClearList.setEnabled(False)
         self.ui.btnConvert.setEnabled(False)
 
 
     # Enable widgets
     def enableWidgets(self):
+        self.ui.actionRemoveFiles.setEnabled(True)
+        self.ui.actionClearList.setEnabled(True)
         self.ui.btnConvert.setEnabled(True)
 
 

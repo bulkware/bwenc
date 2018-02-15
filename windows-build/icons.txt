@@ -1,5 +1,5 @@
-bwRenamer - Icons
------------------
+bwEnc - Icons
+-------------
 
 Oxygen icon set
 - Description: KDE icon theme.

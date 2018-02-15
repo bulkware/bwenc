@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Wed Feb 19 18:44:51 2014
+# Created: Sat Feb 22 18:45:29 2014
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -79,22 +79,30 @@ class Ui_MainWindow(object):
         self.statusBar = QtGui.QStatusBar(MainWindow)
         self.statusBar.setObjectName(_fromUtf8("statusBar"))
         MainWindow.setStatusBar(self.statusBar)
+        self.toolBar = QtGui.QToolBar(MainWindow)
+        self.toolBar.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.toolBar.setObjectName(_fromUtf8("toolBar"))
+        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         self.actionQuit = QtGui.QAction(MainWindow)
         self.actionQuit.setObjectName(_fromUtf8("actionQuit"))
         self.actionAddFiles = QtGui.QAction(MainWindow)
         self.actionAddFiles.setObjectName(_fromUtf8("actionAddFiles"))
         self.actionAddFolder = QtGui.QAction(MainWindow)
         self.actionAddFolder.setObjectName(_fromUtf8("actionAddFolder"))
-        self.actionClearFileList = QtGui.QAction(MainWindow)
-        self.actionClearFileList.setObjectName(_fromUtf8("actionClearFileList"))
+        self.actionClearList = QtGui.QAction(MainWindow)
+        self.actionClearList.setEnabled(False)
+        self.actionClearList.setObjectName(_fromUtf8("actionClearList"))
         self.actionAbout = QtGui.QAction(MainWindow)
         self.actionAbout.setObjectName(_fromUtf8("actionAbout"))
         self.actionMaximumFileSize = QtGui.QAction(MainWindow)
         self.actionMaximumFileSize.setObjectName(_fromUtf8("actionMaximumFileSize"))
+        self.actionRemoveFiles = QtGui.QAction(MainWindow)
+        self.actionRemoveFiles.setEnabled(False)
+        self.actionRemoveFiles.setObjectName(_fromUtf8("actionRemoveFiles"))
         self.menuFile.addAction(self.actionAddFiles)
         self.menuFile.addAction(self.actionAddFolder)
-        self.menuFile.addSeparator()
-        self.menuFile.addAction(self.actionClearFileList)
+        self.menuFile.addAction(self.actionRemoveFiles)
+        self.menuFile.addAction(self.actionClearList)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionQuit)
         self.menuHelp.addAction(self.actionAbout)
@@ -102,6 +110,10 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuSettings.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
+        self.toolBar.addAction(self.actionAddFiles)
+        self.toolBar.addAction(self.actionAddFolder)
+        self.toolBar.addAction(self.actionRemoveFiles)
+        self.toolBar.addAction(self.actionClearList)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -114,12 +126,15 @@ class Ui_MainWindow(object):
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
         self.menuHelp.setTitle(_translate("MainWindow", "Help", None))
         self.menuSettings.setTitle(_translate("MainWindow", "Settings", None))
+        self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar", None))
         self.actionQuit.setText(_translate("MainWindow", "Quit", None))
         self.actionAddFiles.setText(_translate("MainWindow", "Add files...", None))
         self.actionAddFolder.setText(_translate("MainWindow", "Add folder...", None))
         self.actionAddFolder.setToolTip(_translate("MainWindow", "Add folder", None))
-        self.actionClearFileList.setText(_translate("MainWindow", "Clear file list", None))
-        self.actionClearFileList.setToolTip(_translate("MainWindow", "Clear file list", None))
+        self.actionClearList.setText(_translate("MainWindow", "Clear list", None))
+        self.actionClearList.setToolTip(_translate("MainWindow", "Clear list", None))
         self.actionAbout.setText(_translate("MainWindow", "About...", None))
         self.actionMaximumFileSize.setText(_translate("MainWindow", "Maximum file size...", None))
+        self.actionRemoveFiles.setText(_translate("MainWindow", "Remove files", None))
+        self.actionRemoveFiles.setToolTip(_translate("MainWindow", "Remove files", None))
 

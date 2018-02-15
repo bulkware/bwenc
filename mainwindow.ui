@@ -123,8 +123,8 @@
     </property>
     <addaction name="actionAddFiles"/>
     <addaction name="actionAddFolder"/>
-    <addaction name="separator"/>
-    <addaction name="actionClearFileList"/>
+    <addaction name="actionRemoveFiles"/>
+    <addaction name="actionClearList"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -145,6 +145,24 @@
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionAddFiles"/>
+   <addaction name="actionAddFolder"/>
+   <addaction name="actionRemoveFiles"/>
+   <addaction name="actionClearList"/>
+  </widget>
   <action name="actionQuit">
    <property name="text">
     <string>Quit</string>
@@ -163,12 +181,15 @@
     <string>Add folder</string>
    </property>
   </action>
-  <action name="actionClearFileList">
+  <action name="actionClearList">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
-    <string>Clear file list</string>
+    <string>Clear list</string>
    </property>
    <property name="toolTip">
-    <string>Clear file list</string>
+    <string>Clear list</string>
    </property>
   </action>
   <action name="actionAbout">
@@ -179,6 +200,17 @@
   <action name="actionMaximumFileSize">
    <property name="text">
     <string>Maximum file size...</string>
+   </property>
+  </action>
+  <action name="actionRemoveFiles">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Remove files</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove files</string>
    </property>
   </action>
  </widget>

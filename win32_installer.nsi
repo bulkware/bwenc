@@ -2,7 +2,7 @@
 Name "bwEnc"
 
 ; The file to write
-OutFile "installers\bwenc_103_installer_win32.exe"
+OutFile "installers\bwenc_1.1.0_installer_win32.exe"
 
 ; The default installation directory
 InstallDir "$PROGRAMFILES\bwEnc"

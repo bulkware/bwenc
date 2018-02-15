@@ -1,16 +1,25 @@
 bwEnc - What's New?
 -------------------
 
+Version 1.1.0
+- Command line arguments looped the same as the other file adds.
+- Fixed a bug with the maximum size limit.
+- Refresh file list table before messaging user.
+- Toolbar.
+- UTF-8 --> UTF-8 with BOM.
+- UTF-8 without BOM is now the default output encoding.
+- Version numbering changed.
+
 Version 1.03
-- Action icons
-- Add directory is now add folder
-- Drag-and-drop
-- Dummy column for easier table selections
-- Enable/disable widgets based on user actions
-- More detailed info on file add (duplicates, folders, unallowed extensions)
-- New style PyQt signals
-- Row numbers in table for counting
-- Window geometry is now saved
+- Action icons.
+- Add directory is now add folder.
+- Drag-and-drop.
+- Dummy column for easier table selections.
+- Enable/disable widgets based on user actions.
+- More detailed info on file add (duplicates, folders, unallowed extensions).
+- New style PyQt signals.
+- Row numbers in table for counting.
+- Window geometry is now saved.
 
 Version 1.02
 - Settings are now handled using Qt's QSettings.
