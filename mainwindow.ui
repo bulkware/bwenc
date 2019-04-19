@@ -114,7 +114,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -162,6 +162,7 @@
    <addaction name="actionAddFolder"/>
    <addaction name="actionRemoveFiles"/>
    <addaction name="actionClearList"/>
+   <addaction name="actionQuit"/>
   </widget>
   <action name="actionQuit">
    <property name="text">
