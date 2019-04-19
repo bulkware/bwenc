@@ -329,7 +329,7 @@ class Main(QtGui.QMainWindow):
         This is free software.<br />
         Released under the General Public License.<br />
         <br />
-        <a href="http://sourceforge.net/projects/bwenc/">SourceForge</a>"""
+        <a href="https://github.com/bulkware/bwenc">GitHub</a>"""
         QtGui.QMessageBox.about(self, "About", message)
 
 
