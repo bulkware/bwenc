@@ -31,8 +31,8 @@ files are added.
 ### File > Clear filelist
 Clears the filelist.
 
-### File > Exit
-Exits the application.
+### File > Quit
+Quits the application.
 
 ### Settings > Maximum file size...
 Determines the maximum allowed file size. Files that are larger than this will
