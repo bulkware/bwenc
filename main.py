@@ -32,6 +32,7 @@ class Main(QtGui.QMainWindow):
         self.path = "" # String for path
         self.encodings = [
             ["ASCII", "ascii"],
+            ["IBM437", "cp437"],
             ["ISO-8859-1", "latin_1"],
             ["ISO-8859-2", "iso8859_2"],
             ["ISO-8859-3", "iso8859_3"],
