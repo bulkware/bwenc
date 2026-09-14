@@ -8,8 +8,8 @@ import csv # CSV File Reading and Writing
 import os # Miscellaneous operating system interfaces
 import sys # System-specific parameters and functions
 
-# PyQt imports
-from PyQt4 import QtCore, QtGui
+# PyQt6 imports
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 # Application classes
 from encconv import EncConv # A class to convert file encoding
@@ -21,7 +21,7 @@ import functions # Useful functions
 from mainwindow import *
 
 # Create a class for our mainwindow
-class Main(QtGui.QMainWindow):
+class Main(QtWidgets.QMainWindow):
 
     # Initialize mainwindow
     def __init__(self):
@@ -72,7 +72,7 @@ class Main(QtGui.QMainWindow):
         self.encconv = EncConv()
 
         # Initialize top level window widget
-        QtGui.QMainWindow.__init__(self)
+        super().__init__()
 
         # This is always the same
         self.ui = Ui_MainWindow()
@@ -150,7 +150,7 @@ class Main(QtGui.QMainWindow):
     def addFiles(self):
 
         # Get file list using a dialog
-        items = QtGui.QFileDialog.getOpenFileNames(self, "Add files",
+        items, _ = QtWidgets.QFileDialog.getOpenFileNames(self, "Add files",
             self.path, self.typefilter)
 
         # Check list for items
@@ -165,7 +165,7 @@ class Main(QtGui.QMainWindow):
     def addFolder(self):
 
         # Get folder using a dialog
-        path = QtGui.QFileDialog.getExistingDirectory(self, "Add folder",
+        path = QtWidgets.QFileDialog.getExistingDirectory(self, "Add folder",
             self.path)
 
         # Check path
@@ -252,7 +252,7 @@ class Main(QtGui.QMainWindow):
             msg += "%s folders\n" % (folders)
             msg += "%s over maximum size\n" % (oversized)
             msg += "%s unallowed extensions\n" % (unallowed)
-            QtGui.QMessageBox.information(self, "Info", msg)
+            QtWidgets.QMessageBox.information(self, "Info", msg)
 
 
     # Clear list
@@ -268,13 +268,13 @@ class Main(QtGui.QMainWindow):
         # Check if file list is empty
         if len(self.filelist) < 1:
             msg = "No files in list."
-            QtGui.QMessageBox.critical(self, "Error", msg)
+            QtWidgets.QMessageBox.critical(self, "Error", msg)
             return
 
         # Check table's selected items
         if not self.ui.tblFileList.selectedIndexes():
             msg = "Please select file."
-            QtGui.QMessageBox.critical(self, "Error", msg)
+            QtWidgets.QMessageBox.critical(self, "Error", msg)
             return
 
         # Get indexes from table
@@ -300,7 +300,7 @@ class Main(QtGui.QMainWindow):
     def maximumFileSize(self):
 
         # Get user input
-        maxsize, ok = QtGui.QInputDialog.getInt(self, "Maximum file size",
+        maxsize, ok = QtWidgets.QInputDialog.getInt(self, "Maximum file size",
             "Enter maximum file size in bytes:", self.maxsize, 1, 1073741824)
 
         # User cancelled
@@ -310,7 +310,7 @@ class Main(QtGui.QMainWindow):
         # Check if maximum size is less than 1
         if maxsize < 1:
             message = "Maximum file size cannot be less than 1."
-            QtGui.QMessageBox.critical(self, "Error", message)
+            QtWidgets.QMessageBox.critical(self, "Error", message)
             return
 
         # Set new maximum file size
@@ -319,7 +319,7 @@ class Main(QtGui.QMainWindow):
 
     # File > Quit
     def quitApplication(self):
-        QtGui.QApplication.quit()
+        QtWidgets.QApplication.quit()
 
 
     # Help > About...
@@ -331,7 +331,7 @@ class Main(QtGui.QMainWindow):
         Released under the General Public License.<br />
         <br />
         <a href="https://github.com/bulkware/bwenc">GitHub</a>"""
-        QtGui.QMessageBox.about(self, "About", message)
+        QtWidgets.QMessageBox.about(self, "About", message)
 
 
     #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -340,7 +340,7 @@ class Main(QtGui.QMainWindow):
 
     # Drag
     def dragEnterEvent(self, event):
-        if (event.type() == QtCore.QEvent.DragEnter):
+        if event.type() == QtCore.QEvent.Type.DragEnter:
             if event.mimeData().hasUrls():
                 event.accept()
             else:
@@ -348,7 +348,7 @@ class Main(QtGui.QMainWindow):
 
     # Drop
     def dropEvent(self, event):
-        if (event.type() == QtCore.QEvent.Drop):
+        if event.type() == QtCore.QEvent.Type.Drop:
             if event.mimeData().hasUrls():
 
                 # Make a list of items from drag-and-drop
@@ -409,13 +409,10 @@ class Main(QtGui.QMainWindow):
                 csvhandle = csv.reader(csvfile, delimiter=",", quotechar='"')
                 for line in csvhandle:
                     self.whitelist[line[1].lower()] = line[0]
-        # Except
         except:
             return False
 
-        # Finally
-        finally:
-            return True
+        return True
 
 
     #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -444,19 +441,19 @@ class Main(QtGui.QMainWindow):
         # Populate table
         for i, file in enumerate(self.filelist):
 
-            item = QtGui.QTableWidgetItem(os.path.basename(file))
-            item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
-            item.setTextAlignment(int(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft))
+            item = QtWidgets.QTableWidgetItem(os.path.basename(file))
+            item.setFlags(QtCore.Qt.ItemFlag.ItemIsEnabled | QtCore.Qt.ItemFlag.ItemIsSelectable)
+            item.setTextAlignment(int(QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft))
             self.ui.tblFileList.setItem(i, 0, item)
 
             size = functions.convert_bytes(os.path.getsize(file))
-            item = QtGui.QTableWidgetItem(size)
-            item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
-            item.setTextAlignment(int(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight))
+            item = QtWidgets.QTableWidgetItem(size)
+            item.setFlags(QtCore.Qt.ItemFlag.ItemIsEnabled | QtCore.Qt.ItemFlag.ItemIsSelectable)
+            item.setTextAlignment(int(QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight))
             self.ui.tblFileList.setItem(i, 1, item)
 
-            item = QtGui.QTableWidgetItem()
-            item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
+            item = QtWidgets.QTableWidgetItem()
+            item.setFlags(QtCore.Qt.ItemFlag.ItemIsEnabled | QtCore.Qt.ItemFlag.ItemIsSelectable)
             self.ui.tblFileList.setItem(i, 2, item)
 
         # Resize columns to contents
@@ -472,7 +469,7 @@ class Main(QtGui.QMainWindow):
         # Check if file list is empty
         if len(self.filelist) == 0:
             message = "No files to process."
-            QtGui.QMessageBox.critical(self, "Error", message)
+            QtWidgets.QMessageBox.critical(self, "Error", message)
             return False
 
         # Get encodings from comboboxes
@@ -482,7 +479,7 @@ class Main(QtGui.QMainWindow):
         # Check that input and output encodings differ
         if inputenc == outputenc:
             message = "Input encoding cannot be the same as output encoding."
-            QtGui.QMessageBox.critical(self, "Error", message)
+            QtWidgets.QMessageBox.critical(self, "Error", message)
             return False
 
         # Loop files and convert encoding(s)
@@ -492,12 +489,12 @@ class Main(QtGui.QMainWindow):
             ok = self.encconv.convert_encoding(file, inputenc, outputenc)
             if not ok:
                 message = self.encconv.message
-                QtGui.QMessageBox.critical(self, "Error", message)
+                QtWidgets.QMessageBox.critical(self, "Error", message)
                 return False
 
         # Conversion(s) successful, message user
         message = "File encodings converted."
-        QtGui.QMessageBox.information(self, "Information", message)
+        QtWidgets.QMessageBox.information(self, "Information", message)
 
 
     # Disable widgets
@@ -516,8 +513,8 @@ class Main(QtGui.QMainWindow):
 
 # Creates an application object and begins the event handling loop
 if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     window = Main()
     window.show()
-    ret = app.exec_()
+    ret = app.exec()
     sys.exit(ret)
