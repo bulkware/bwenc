@@ -52,7 +52,7 @@ these but keep in mind that not all files are supposed to be converted.
 
 ### Installing dependencies (Debian-based systems)
 Open your terminal application and type:
-`sudo apt-get install python3 python3-pyqt6`
+`sudo apt-get install python3 python3-pyside6`
 
 Alternatively, install the project dependency with:
 `python3 -m pip install -r requirements.txt`
