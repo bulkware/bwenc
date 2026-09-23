@@ -325,7 +325,7 @@ class Main(QtWidgets.QMainWindow):
     # Help > About...
     def aboutMessage(self):
         message = """<strong>bwEnc</strong><br />
-        Version 1.4.0<br />
+        Version 1.5.0<br />
         <br />
         This is free software.<br />
         Released under the General Public License.<br />

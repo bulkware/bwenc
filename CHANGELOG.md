@@ -2,6 +2,11 @@
 
 All notable changes to bwEnc will be documented in this file.
 
+## [1.5.0]
+
+### Changed
+
+- Migrated from PyQt6 into PySide6.
 
 ## [1.4.0]
 
