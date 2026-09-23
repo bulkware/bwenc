@@ -8,8 +8,8 @@ import csv # CSV File Reading and Writing
 import os # Miscellaneous operating system interfaces
 import sys # System-specific parameters and functions
 
-# PyQt6 imports
-from PyQt6 import QtCore, QtGui, QtWidgets
+# PySide6 imports
+from PySide6 import QtCore, QtGui, QtWidgets
 
 # Application classes
 from encconv import EncConv # A class to convert file encoding

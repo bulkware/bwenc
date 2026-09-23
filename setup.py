@@ -38,6 +38,7 @@ setup(
     description = "An application to convert file encodings.",
     name = "bwEnc",
     version = "1.4.0",
+    install_requires = ["PySide6>=6.0"],
     options = dict(build_exe = buildOptions),
     executables = [exe]
 )
