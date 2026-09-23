@@ -33,3 +33,7 @@ htmlcov/
 .vscode/
 .idea/
 .DS_Store
+
+# Project-specific generated files
+versions/
+config.cfg
