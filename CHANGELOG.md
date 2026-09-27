@@ -12,7 +12,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - GitHub Actions CI package building.
 - Packaging system for Debian (.deb) and Red Hat (.rpm) based distros.
-- Packaging: Build Debian packages with Debian Trixie and modernize release workflows.
 - Renewed the Windows packaging system.
 
 
