@@ -6,6 +6,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.6.2] - 2026-09-27
+
+### Changed
+
+- Version info.
+
+## [1.6.1] - 2026-09-27
+
+### Changed
+
+- Standardized runtime version handling with the other bulkware applications.
+
 ## [1.6.0] - 2026-09-27
 
 ### Changed

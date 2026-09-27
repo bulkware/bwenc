@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bwEnc"
-version = "1.6.0"
+version = "1.6.2"
 description = "Desktop application for converting text-file encodings."
 readme = "README.md"
 requires-python = ">=3.11"
