@@ -1,6 +1,6 @@
-# bwenc
+# bwEnc
 
-An application to convert file encodings.
+Desktop application for converting text-file encodings.
 
 
 ## How to use
@@ -43,9 +43,10 @@ Application information.
 
 
 ## Customising whitelist
-There is a special file in the application directory named "whitelist.csv". This
-file contains the allowed file types for the application. You may add or remove
-these but keep in mind that not all files are supposed to be converted.
+The bundled `whitelist.csv` contains the allowed file types. In a Windows
+portable build it is located in the `assets` directory beside the executable;
+you may adjust that copy, but keep in mind that not all files are supposed to
+be converted.
 
 
 ## Running on Linux
@@ -55,7 +56,7 @@ Open your terminal application and type:
 `sudo apt-get install python3 python3-pyside6`
 
 Alternatively, install the project dependency with:
-`python3 -m pip install -r requirements.txt`
+`python3 -m pip install .`
 
 Hit enter. Enter your password when prompted. Answer yes to the question about
 using additional disk space.
@@ -65,4 +66,15 @@ git clone https://github.com/bulkware/bwenc.git
 
 ### Running the application
 You can run the application from the source code using this command:
-`python3 main.py`
+`make run`
+
+Or, after installation, run `bwenc`.
+
+## Building
+
+The project uses the same build interface as bwCSV. Run `make help` to see the
+available checks and package targets. In particular, `make build` produces the
+source distribution and wheel; `make deb`, `make rpm`, and `make windows`
+produce the platform packages.
+
+Debian and RPM package builds run the source-tree unit tests and fail if they do not pass.

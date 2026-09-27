@@ -1,0 +1,7 @@
+include CHANGELOG.md
+include ICONS.md
+include LICENSE.md
+include src/freeze_entry.py
+include src/bwenc/mainwindow.ui
+recursive-include data *
+recursive-include docs *.md *.png
