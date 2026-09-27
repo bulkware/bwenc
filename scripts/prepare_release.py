@@ -39,27 +39,16 @@ def sync_appstream(path: Path, version: str, release_date: str) -> str:
     return contents.replace(marker, marker + release, 1)
 
 
-def sync_runtime_version(path: Path, version: str) -> str:
-    """Update the packaged runtime fallback from the published release version."""
-    contents = path.read_text(encoding="utf-8")
-    version_line = re.compile(r'^__version__ = "[^"]+"$', re.MULTILINE)
-    if not version_line.search(contents):
-        raise ValueError("src/bwenc/__init__.py has no __version__ assignment")
-    return version_line.sub(f'__version__ = "{version}"', contents, count=1)
-
-
 def sync_release(root: Path) -> None:
-    """Read the latest changelog release, then update all derived version metadata."""
+    """Read the latest changelog release, then update derived release metadata."""
     changelog = root / "CHANGELOG.md"
     release = parse_changelog(changelog)
     pyproject = root / "pyproject.toml"
     appstream = root / "data/org.bulkware.bwenc.metainfo.xml"
-    runtime_version = root / "src/bwenc/__init__.py"
     release_date = release.release_date.isoformat()
     updates = {
         pyproject: sync_pyproject(pyproject, release.version),
         appstream: sync_appstream(appstream, release.version, release_date),
-        runtime_version: sync_runtime_version(runtime_version, release.version),
     }
     for path, contents in updates.items():
         path.write_text(contents, encoding="utf-8")

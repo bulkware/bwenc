@@ -1,12 +1,16 @@
 """Check installed-package metadata without native package toolchains."""
 
+import importlib
+from importlib.metadata import PackageNotFoundError
 from pathlib import Path
 from datetime import datetime
 import re
 import tomllib
 import unittest
+from unittest import mock
 from xml.etree import ElementTree
 
+import bwenc
 from bwenc import __version__
 from bwenc.resources import asset_path
 
@@ -27,8 +31,16 @@ class MetadataTests(unittest.TestCase):
         self.assertIsNotNone(release)
         version = project["project"]["version"]
         self.assertEqual(release.attrib["version"], version)
-        self.assertEqual(__version__, version)
+        self.assertIn(__version__, (version, "development"))
         self.assertIn(f"## [{version}]", (ROOT / "CHANGELOG.md").read_text(encoding="utf-8"))
+
+    def test_runtime_version_uses_distribution_metadata_with_source_fallback(self):
+        """Avoid a second, manually synchronized runtime version constant."""
+        with mock.patch("importlib.metadata.version", return_value="9.8.7"):
+            self.assertEqual(importlib.reload(bwenc).__version__, "9.8.7")
+        with mock.patch("importlib.metadata.version", side_effect=PackageNotFoundError):
+            self.assertEqual(importlib.reload(bwenc).__version__, "development")
+        importlib.reload(bwenc)
 
     def test_user_facing_descriptions_match_package_metadata(self):
         project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
