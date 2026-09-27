@@ -25,6 +25,9 @@ bwEnc converts supported text files between common character encodings.
 %build
 %pyproject_wheel
 
+%check
+PYTHONPATH=src %{python3} -m unittest discover -s tests -v
+
 %install
 %pyproject_install
 install -D -m 644 data/org.bulkware.bwenc.desktop \
@@ -45,5 +48,5 @@ install -D -m 644 data/icons/hicolor/512x512/apps/org.bulkware.bwenc.png \
 %{_datadir}/icons/hicolor/512x512/apps/org.bulkware.bwenc.png
 
 %changelog
-* Sat Sep 27 2026 Antti-Pekka Meronen <antice@kapsi.fi> - 1.6.0-1
+* Sun Sep 27 2026 Antti-Pekka Meronen <antice@kapsi.fi> - 1.6.0-1
 - Packaging system for Debian (deb) and Red Hat (rpm) based distros.

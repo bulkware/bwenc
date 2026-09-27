@@ -76,3 +76,5 @@ The project uses the same build interface as bwCSV. Run `make help` to see the
 available checks and package targets. In particular, `make build` produces the
 source distribution and wheel; `make deb`, `make rpm`, and `make windows`
 produce the platform packages.
+
+Debian and RPM package builds run the source-tree unit tests and fail if they do not pass.

@@ -1,10 +1,13 @@
 """Check installed-package metadata without native package toolchains."""
 
 from pathlib import Path
+from datetime import datetime
+import re
 import tomllib
 import unittest
 from xml.etree import ElementTree
 
+from bwenc import __version__
 from bwenc.resources import asset_path
 
 
@@ -24,6 +27,7 @@ class MetadataTests(unittest.TestCase):
         self.assertIsNotNone(release)
         version = project["project"]["version"]
         self.assertEqual(release.attrib["version"], version)
+        self.assertEqual(__version__, version)
         self.assertIn(f"## [{version}]", (ROOT / "CHANGELOG.md").read_text(encoding="utf-8"))
 
     def test_user_facing_descriptions_match_package_metadata(self):
@@ -57,3 +61,19 @@ class MetadataTests(unittest.TestCase):
         self.assertIn("## Application icons", icons)
         self.assertIn("## Oxygen icons", icons)
         self.assertIn("src/bwenc/assets/about.png", icons)
+
+    def test_native_template_changelog_weekdays_match_their_dates(self):
+        """Keep manually seeded native changelog entries valid for their builders."""
+        rpm = (ROOT / "packaging/rpm/bwenc.spec").read_text(encoding="utf-8")
+        debian = (ROOT / "debian/changelog").read_text(encoding="utf-8")
+        rpm_match = re.search(r"^\* (?P<weekday>\w{3}) (?P<date>\w{3} \d{1,2} \d{4}) ",
+                              rpm, re.MULTILINE)
+        debian_match = re.search(r"^ -- .+  (?P<weekday>\w{3}), (?P<date>\d{1,2} \w{3} \d{4}) ",
+                                 debian, re.MULTILINE)
+
+        self.assertIsNotNone(rpm_match)
+        self.assertIsNotNone(debian_match)
+        rpm_date = datetime.strptime(rpm_match["date"], "%b %d %Y")
+        debian_date = datetime.strptime(debian_match["date"], "%d %b %Y")
+        self.assertEqual(rpm_match["weekday"], rpm_date.strftime("%a"))
+        self.assertEqual(debian_match["weekday"], debian_date.strftime("%a"))
