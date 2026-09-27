@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Stage only tracked package inputs so RPM never receives local caches or settings.
+# The temporary tree also prevents generated version metadata from changing Git files.
+project_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+package_revision=${PACKAGE_REVISION:-1}
+build_root="$project_root/build/rpm/rpmbuild"
+staging_root=$(mktemp -d)
+trap 'rm -rf "$staging_root"' EXIT
+
+cd "$project_root"
+version=$(python3 -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')
+rm -rf "$build_root"
+mkdir -p "$build_root"/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
+
+source_root="$staging_root/bwenc-$version"
+mkdir -p "$source_root/src/bwenc/assets" \
+    "$source_root/data/icons/hicolor/512x512/apps" "$source_root/docs/images"
+cp pyproject.toml README.md CHANGELOG.md ICONS.md LICENSE.md MANIFEST.in "$source_root/"
+cp src/freeze_entry.py "$source_root/src/"
+cp src/bwenc/*.py src/bwenc/mainwindow.ui "$source_root/src/bwenc/"
+cp src/bwenc/assets/*.png src/bwenc/assets/*.csv "$source_root/src/bwenc/assets/"
+cp data/org.bulkware.bwenc.desktop data/org.bulkware.bwenc.metainfo.xml "$source_root/data/"
+cp data/icons/hicolor/512x512/apps/org.bulkware.bwenc.png \
+    "$source_root/data/icons/hicolor/512x512/apps/"
+cp docs/images/*.png "$source_root/docs/images/"
+tar -czf "$build_root/SOURCES/bwenc-$version.tar.gz" \
+    -C "$staging_root" "bwenc-$version"
+
+spec_stage="$staging_root/bwenc.spec"
+cp packaging/rpm/bwenc.spec "$spec_stage"
+python3 scripts/package_metadata.py --rpm-spec "$spec_stage" --revision "$package_revision"
+
+rpmbuild --define "_topdir $build_root" -ba "$spec_stage"

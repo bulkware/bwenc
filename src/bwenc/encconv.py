@@ -1,7 +1,6 @@
 # !/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
-""" A class to convert file encoding. """
+"""Convert the encoding of one text file."""
 
 # Python imports
 import os # Miscellaneous operating system interfaces
@@ -46,15 +45,13 @@ class EncConv(object):
         # Try to change file encoding
         try:
 
-            filehandle = open(file, "r", encoding=inputenc)
-            for line in filehandle:
-                filedata.append(line)
-            filehandle.close()
+            with open(file, "r", encoding=inputenc) as filehandle:
+                for line in filehandle:
+                    filedata.append(line)
 
-            filehandle = open(file, "w", encoding=outputenc)
-            for line in filedata:
-                filehandle.write(line)
-            filehandle.close()
+            with open(file, "w", encoding=outputenc) as filehandle:
+                for line in filedata:
+                    filehandle.write(line)
 
         except IOError as e:
             self.message = "I/O error({0}): {1}".format(e.errno, e.strerror)

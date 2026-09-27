@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=bwEnc
+Comment=Desktop application for converting text-file encodings
+Icon=org.bulkware.bwenc
+Exec=bwenc %F
+Terminal=false
+Type=Application
+Categories=Utility;TextTools;
+Keywords=text;encoding;conversion;UTF-8;Unicode;
+StartupWMClass=bwEnc

@@ -1,0 +1,108 @@
+# This file is the single packaging authority for Python, Windows, and native
+# package build metadata.
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bwEnc"
+version = "1.6.0"
+description = "Desktop application for converting text-file encodings."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE.md"]
+authors = [{ name = "Antti-Pekka Meronen", email = "antice@kapsi.fi" }]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Text Processing",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+]
+dependencies = ["PySide6>=6.0"]
+
+[project.scripts]
+bwenc = "bwenc.main:main"
+
+[project.urls]
+"Bug Reports" = "https://github.com/bulkware/bwenc/issues"
+Source = "https://github.com/bulkware/bwenc"
+
+[project.optional-dependencies]
+dev = ["coverage>=7.0", "pylint>=3.0"]
+release = ["build>=1.2", "cx-Freeze>=8.6"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+bwenc = ["assets/*.png", "assets/*.csv"]
+
+[[tool.cxfreeze.executables]]
+script = "src/freeze_entry.py"
+base = "gui"
+target-name = "bwEnc"
+icon = "data/icons/bwenc.ico"
+shortcut-name = "bwEnc"
+shortcut-dir = "bwEncMenu"
+copyright = "Copyright (C) 2026 Bulkware"
+
+[tool.cxfreeze.build_exe]
+build-exe = "build/windows/bwEnc"
+include-files = [["src/bwenc/assets", "assets"]]
+include-msvcr = true
+packages = ["shiboken6"]
+includes = ["zlib"]
+zip-exclude-packages = ["*"]
+
+[tool.cxfreeze.bdist_msi]
+dist-dir = "build/windows/installer"
+product-name = "bwEnc"
+initial-target-dir = "[LocalAppDataFolder]Programs\\bwEnc"
+install-icon = "data/icons/bwenc.ico"
+launch-on-finish = true
+upgrade-code = "{76D12F64-4138-4643-9FC4-3EC1BCBE6AB2}"
+
+[tool.cxfreeze.bdist_msi.data]
+Directory = [
+    ["ProgramMenuFolder", "TARGETDIR", "."],
+    ["bwEncMenu", "ProgramMenuFolder", "BWENC~1|bwEnc"],
+]
+
+[tool.pylint.main]
+py-version = "3.11"
+
+[tool.pylint.format]
+max-line-length = 100
+
+[tool.pylint."messages control"]
+disable = [
+    "bare-except",
+    "c-extension-no-member",
+    "consider-using-f-string",
+    "inconsistent-return-statements",
+    "invalid-name",
+    "missing-module-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "no-else-return",
+    "simplifiable-if-statement",
+    "too-many-branches",
+    "too-many-instance-attributes",
+    "too-many-return-statements",
+    "too-few-public-methods",
+    "too-many-arguments",
+    "trailing-whitespace",
+    "too-many-positional-arguments",
+    "unused-argument",
+    "unused-variable",
+    "useless-object-inheritance",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["bwenc"]
+
+[tool.coverage.report]
+show_missing = true

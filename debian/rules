@@ -1,0 +1,13 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_auto_install:
+	dh_auto_install
+	install -D -m 644 data/org.bulkware.bwenc.desktop \
+		debian/bwenc/usr/share/applications/org.bulkware.bwenc.desktop
+	install -D -m 644 data/org.bulkware.bwenc.metainfo.xml \
+		debian/bwenc/usr/share/metainfo/org.bulkware.bwenc.metainfo.xml
+	install -D -m 644 data/icons/hicolor/512x512/apps/org.bulkware.bwenc.png \
+		debian/bwenc/usr/share/icons/hicolor/512x512/apps/org.bulkware.bwenc.png

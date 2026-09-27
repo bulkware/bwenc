@@ -1,7 +1,6 @@
 # !/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
-""" An application to convert file encodings. """
+"""Desktop application for converting text-file encodings."""
 
 # Python imports
 import csv # CSV File Reading and Writing
@@ -12,13 +11,15 @@ import sys # System-specific parameters and functions
 from PySide6 import QtCore, QtGui, QtWidgets
 
 # Application classes
-from encconv import EncConv # A class to convert file encoding
+from . import __version__
+from .encconv import EncConv # A class to convert file encoding
 
 # Application functions
-import functions # Useful functions
+from . import functions # Useful functions
 
 # Import mainwindow
-from mainwindow import *
+from .mainwindow import Ui_MainWindow
+from .resources import asset_path
 
 # Create a class for our mainwindow
 class Main(QtWidgets.QMainWindow):
@@ -66,7 +67,7 @@ class Main(QtWidgets.QMainWindow):
         ]
         self.typefilter = "" # Type filter for add files dialog
         self.whitelist = {"txt": "Text files"} # Whitelist for file extensions
-        self.whitelistfile = "whitelist.csv" # Whitelist file
+        self.whitelistfile = asset_path("whitelist.csv") # Whitelist file
 
         # Create an instance of encoding converter
         self.encconv = EncConv()
@@ -96,15 +97,15 @@ class Main(QtWidgets.QMainWindow):
         self.ui.tblFileList.dropEvent = self.dropEvent
 
         # Icons
-        self.setWindowIcon(QtGui.QIcon("icon.png"))
-        self.ui.actionAddFiles.setIcon(QtGui.QIcon("add_files.png"))
-        self.ui.actionAddFolder.setIcon(QtGui.QIcon("add_folder.png"))
-        self.ui.actionRemoveFiles.setIcon(QtGui.QIcon("remove.png"))
-        self.ui.actionClearList.setIcon(QtGui.QIcon("clear.png"))
-        self.ui.actionMaximumFileSize.setIcon(QtGui.QIcon("max_file_size.png"))
-        self.ui.actionQuit.setIcon(QtGui.QIcon("quit.png"))
-        self.ui.actionAbout.setIcon(QtGui.QIcon("about.png"))
-        self.ui.btnConvert.setIcon(QtGui.QIcon("convert.png"))
+        self.setWindowIcon(QtGui.QIcon(asset_path("icon.png")))
+        self.ui.actionAddFiles.setIcon(QtGui.QIcon(asset_path("add_files.png")))
+        self.ui.actionAddFolder.setIcon(QtGui.QIcon(asset_path("add_folder.png")))
+        self.ui.actionRemoveFiles.setIcon(QtGui.QIcon(asset_path("remove.png")))
+        self.ui.actionClearList.setIcon(QtGui.QIcon(asset_path("clear.png")))
+        self.ui.actionMaximumFileSize.setIcon(QtGui.QIcon(asset_path("max_file_size.png")))
+        self.ui.actionQuit.setIcon(QtGui.QIcon(asset_path("quit.png")))
+        self.ui.actionAbout.setIcon(QtGui.QIcon(asset_path("about.png")))
+        self.ui.btnConvert.setIcon(QtGui.QIcon(asset_path("convert.png")))
 
         # Loop and set encodings to comboboxes
         for item in self.encodings:
@@ -325,12 +326,12 @@ class Main(QtWidgets.QMainWindow):
     # Help > About...
     def aboutMessage(self):
         message = """<strong>bwEnc</strong><br />
-        Version 1.5.0<br />
+        Version %s<br />
         <br />
         This is free software.<br />
         Released under the General Public License.<br />
         <br />
-        <a href="https://github.com/bulkware/bwenc">GitHub</a>"""
+        <a href="https://github.com/bulkware/bwenc">GitHub</a>""" % __version__
         QtWidgets.QMessageBox.about(self, "About", message)
 
 
@@ -405,7 +406,7 @@ class Main(QtWidgets.QMainWindow):
 
         # Try to load whitelist file
         try:
-            with open(self.whitelistfile, "r") as csvfile:
+            with open(self.whitelistfile, "r", encoding="utf-8", newline="") as csvfile:
                 csvhandle = csv.reader(csvfile, delimiter=",", quotechar='"')
                 for line in csvhandle:
                     self.whitelist[line[1].lower()] = line[0]
@@ -443,13 +444,17 @@ class Main(QtWidgets.QMainWindow):
 
             item = QtWidgets.QTableWidgetItem(os.path.basename(file))
             item.setFlags(QtCore.Qt.ItemFlag.ItemIsEnabled | QtCore.Qt.ItemFlag.ItemIsSelectable)
-            item.setTextAlignment(int(QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft))
+            item.setTextAlignment(int(
+                QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft
+            ))
             self.ui.tblFileList.setItem(i, 0, item)
 
             size = functions.convert_bytes(os.path.getsize(file))
             item = QtWidgets.QTableWidgetItem(size)
             item.setFlags(QtCore.Qt.ItemFlag.ItemIsEnabled | QtCore.Qt.ItemFlag.ItemIsSelectable)
-            item.setTextAlignment(int(QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight))
+            item.setTextAlignment(int(
+                QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight
+            ))
             self.ui.tblFileList.setItem(i, 1, item)
 
             item = QtWidgets.QTableWidgetItem()
@@ -511,10 +516,13 @@ class Main(QtWidgets.QMainWindow):
         self.ui.btnConvert.setEnabled(True)
 
 
-# Creates an application object and begins the event handling loop
-if __name__ == "__main__":
+def main():
+    """Create the application object and run its event loop."""
     app = QtWidgets.QApplication(sys.argv)
     window = Main()
     window.show()
-    ret = app.exec()
-    sys.exit(ret)
+    return app.exec()
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
